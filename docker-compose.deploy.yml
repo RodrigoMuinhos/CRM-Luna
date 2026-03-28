@@ -1,0 +1,108 @@
+services:
+  # ==========================================
+  # CLOUD DEPLOY MODEL
+  # ------------------------------------------
+  # This stack is intentionally different from the kiosk executable.
+  # It excludes local-only runtime pieces such as:
+  # - TotemUI kiosk frontend
+  # - LunaPay local payment flow
+  # - sitef/print bridges
+  # - Windows executables / TEF bundles
+  #
+  # The cloud is the source of truth for CRM/configuration only.
+  # The kiosk executable remains a separate release artifact.
+  # ==========================================
+
+  lunacore:
+    build:
+      context: ./projeto-Luna.code-workspace/LunaCore/lunacore
+      dockerfile: Dockerfile
+    container_name: lunacore-deploy
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - JWT_SECRET=${JWT_SECRET}
+      - SPRING_DATASOURCE_URL=${NEON_LUNACORE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - TOTEM_API_BASE_URL=http://totemapi:8081
+    ports:
+      - "8080:8080"
+    volumes:
+      - lunacore-deploy-logs:/app/logs
+    networks:
+      - lunavita-deploy-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  totemapi:
+    build:
+      context: ./projeto-Luna.code-workspace/LunaTotem/TotemAPI
+      dockerfile: Dockerfile
+    container_name: totemapi-deploy
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8081
+      - JWT_SECRET=${JWT_SECRET}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=3
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=1
+      - SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT=15000
+      - LUNACORE_URL=http://lunacore:8080
+      - LUNAPAY_BASE_URL=
+      - LUNAPAY_PIX_GATEWAY=SITEF
+      - LUNAPAY_PIX_EXPIRATION_MINUTES=30
+      - WEBHOOK_GHL_TOKEN=${WEBHOOK_GHL_TOKEN}
+      - TOTEM_ENCRYPTION_KEY=${TOTEM_ENCRYPTION_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL}
+      - RESEND_WEBHOOK_SECRET=${RESEND_WEBHOOK_SECRET}
+    ports:
+      - "8081:8081"
+    volumes:
+      - totemapi-deploy-logs:/app/logs
+      - totemapi-deploy-uploads:/app/uploads
+    depends_on:
+      lunacore:
+        condition: service_healthy
+    networks:
+      - lunavita-deploy-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  lunavita-deploy-network:
+    driver: bridge
+    name: lunavita-deploy-network
+
+volumes:
+  lunacore-deploy-logs:
+    driver: local
+  totemapi-deploy-logs:
+    driver: local
+  totemapi-deploy-uploads:
+    driver: local

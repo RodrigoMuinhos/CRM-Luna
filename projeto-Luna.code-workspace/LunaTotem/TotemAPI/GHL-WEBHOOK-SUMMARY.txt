@@ -1,0 +1,91 @@
+GHL WEBHOOK IMPLEMENTATION - SUMMARY
+====================================
+
+✅ IMPLEMENTED
+- POST /api/webhooks/ghl/patients endpoint
+- Token validation via x-webhook-token header (env: WEBHOOK_GHL_TOKEN)
+- Idempotent upsert with deduplication (contact_id:event_type in webhook_audit)
+- Normalizer: dates, CPF, email, phone cleaning
+- Multi-tenant support with tenant_id
+- Patient lookup: ghl_contact_id → CPF → create
+- Masked logging (no PII leaks)
+- Transactional processing
+
+COMPILED ✅
+mvn -q -DskipTests compile → SUCCESS
+
+FILES CREATED/MODIFIED
+======================
+
+NEW FILES:
+- src/main/java/br/lunavita/totemapi/dto/GhlPatientWebhookDto.java
+- src/main/java/br/lunavita/totemapi/dto/GhlPatientNormalized.java
+- src/main/java/br/lunavita/totemapi/dto/GhlWebhookResult.java
+- src/main/java/br/lunavita/totemapi/service/GhlPatientNormalizer.java
+- src/main/java/br/lunavita/totemapi/service/GhlWebhookPatientService.java
+- src/main/java/br/lunavita/totemapi/controller/GhlWebhookPatientController.java
+- GHL-WEBHOOK.md (Full documentation)
+- WEBHOOK-GHL-SETUP.md (Quick reference)
+- run-with-ghl.sh (Bash runner)
+- run-with-ghl.bat (Windows runner)
+
+MODIFIED FILES:
+- src/main/java/br/lunavita/totemapi/model/Patient.java (+ghl_contact_id field)
+- src/main/java/br/lunavita/totemapi/repository/PatientRepository.java (+finder methods)
+- src/main/java/br/lunavita/totemapi/repository/WebhookAuditRepository.java (+dedup method)
+
+HOW TO RUN
+==========
+
+1. COMPILE:
+   cd projeto-Luna.code-workspace\LunaTotem\TotemAPI
+   mvn -q -DskipTests compile
+
+2. SET ENVIRONMENT:
+   $env:WEBHOOK_GHL_TOKEN="ln16012x26"
+   $env:SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/lunadb?currentSchema=luna"
+   $env:SPRING_DATASOURCE_USERNAME="postgres"
+   $env:SPRING_DATASOURCE_PASSWORD="your-password"
+
+3. RUN:
+   mvn spring-boot:run
+
+4. TEST (another terminal):
+   POST http://localhost:8081/api/webhooks/ghl/patients
+   Header: x-webhook-token: ln16012x26
+   Body: See GHL-WEBHOOK.md for examples
+
+ENDPOINT
+========
+
+POST /api/webhooks/ghl/patients
+Headers: x-webhook-token, Content-Type: application/json
+Payload: contact_id, full_name, phone, cpf, email, birth_date, notes, tenant_id, event_type
+Response: { success, deduplicated, patientId }
+
+DATABASE
+========
+
+New column automatically created:
+- luna.patients.ghl_contact_id (varchar, unique)
+
+Existing table used:
+- luna.webhook_audit (for deduplication)
+
+SECURITY
+========
+
+✓ Token authentication (x-webhook-token)
+✓ Idempotent processing (no duplicates)
+✓ Masked logging (CPF, email, phone hidden)
+✓ Transactional (atomic operations)
+✓ Multi-tenant isolated
+
+NOTES
+=====
+
+- DB Connection Error: Check PostgreSQL credentials and availability
+- Token Invalid: Returns 401
+- Duplicate Event: Returns 200 with deduplicated=true
+- CPF Protected: Cannot overwrite existing CPF
+- Compilation Success: mvn output confirms no errors

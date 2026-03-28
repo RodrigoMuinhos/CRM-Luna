@@ -1,0 +1,25 @@
+# Configuração para testes
+spring:
+  application:
+    name: lunacore-test
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lunacore_test
+    username: lunacore
+    password: secret
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+jwt:
+  secret: test-secret-key-for-testing-purposes-minimum-256-bits-required
+  expiration: 3600000
+
+logging:
+  level:
+    com.luna.core: DEBUG

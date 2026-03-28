@@ -1,0 +1,48 @@
+# Secrets / environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Git / editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# Node / Next
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Java / Maven
+target/
+*.class
+*.jar
+
+# Runtime / uploads / local state
+uploads/
+logs/
+reports/
+receipts/
+trace/
+comprovantes/
+public/uploads/videos/cache/
+public/uploads/videos/*.mp4
+
+# Temp / backups
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.log
+*.log.*

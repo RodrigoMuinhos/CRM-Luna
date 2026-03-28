@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+yarn.lock*
+pnpm-lock.yaml*
+
+# Next.js
+.next/
+out/
+build/
+dist/
+.vercel
+
+# Production
+/build
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Environment files (passed via docker-compose)
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+.env.local.example
+
+# Testing
+coverage/
+.nyc_output/
+__tests__/
+*.test.js
+*.spec.js
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Scripts
+run-frontend.ps1
+
+# Misc
+*.log
+*.tmp
+*.cache
+data/
+system-page.html
+tmp_*
+public/uploads/
+comprovantes/
+trace/
+receipts/

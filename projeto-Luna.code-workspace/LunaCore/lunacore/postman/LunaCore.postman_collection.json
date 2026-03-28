@@ -1,0 +1,127 @@
+{
+  "info": {
+    "name": "LunaCore API",
+    "description": "Coleção de endpoints da API LunaCore",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Create First Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantName\": \"Clínica Exemplo\",\n  \"cnpj\": \"12345678000190\",\n  \"email\": \"admin@clinica.com\",\n  \"name\": \"Administrador\",\n  \"password\": \"senha123\",\n  \"phone\": \"11999999999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/first-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "first-admin"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set(\"token\", response.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clinica.com\",\n  \"password\": \"senha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "License",
+      "item": [
+        {
+          "name": "Check License Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/license/status?productKey=ABC-123-XYZ&deviceId=TOTEM-001",
+              "host": ["{{baseUrl}}"],
+              "path": ["license", "status"],
+              "query": [
+                {
+                  "key": "productKey",
+                  "value": "ABC-123-XYZ"
+                },
+                {
+                  "key": "deviceId",
+                  "value": "TOTEM-001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activate License",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productKey\": \"ABC-123-XYZ\",\n  \"activationCode\": \"482739\",\n  \"deviceId\": \"TOTEM-001\",\n  \"deviceName\": \"Totem Recepção 1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/license/activate",
+              "host": ["{{baseUrl}}"],
+              "path": ["license", "activate"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

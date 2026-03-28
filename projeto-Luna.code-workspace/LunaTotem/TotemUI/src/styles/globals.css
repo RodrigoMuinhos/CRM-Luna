@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lunavita-gold: #D3A67F;
+  --lunavita-sage: #CDDCDC;
+  --lunavita-beige: #ECE0DE;
+  --lunavita-rose: #CDB0AD;
+  --lunavita-dark: #4A4A4A;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-[#ECE0DE] text-[#4A4A4A] antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

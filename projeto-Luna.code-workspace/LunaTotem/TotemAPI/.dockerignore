@@ -1,0 +1,59 @@
+# Maven
+target/
+!target/*.jar
+.mvn/
+mvnw
+mvnw.cmd
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Git
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test files
+test-seed.ps1
+run-backend.ps1
+run-backend-neon.ps1
+
+# Temp & Backup
+*.tmp
+*.bak
+*.backup
+*.cache
+
+# Uploads (should be volumes)
+uploads/*
+!uploads/.gitkeep

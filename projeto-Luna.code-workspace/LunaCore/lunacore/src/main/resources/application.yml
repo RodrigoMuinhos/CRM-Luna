@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: lunacore
+  
+  datasource:
+    # Banco via env (NUNCA commitar credenciais). Defaults apontam para dev local.
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/lunadb?currentSchema=luna}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Schema controlado (Flyway); Hibernate so valida
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        default_schema: luna
+    show-sql: false
+
+  flyway:
+    enabled: true
+    schemas: luna
+    default-schema: luna
+    create-schemas: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    baseline-description: baseline
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+jwt:
+  # Defina JWT_SECRET no ambiente. Este default é APENAS para dev local.
+  secret: ${JWT_SECRET:dev-only-change-me}
+  expiration: 3600000   # 1 hora em milissegundos
+
+server:
+  # Railway provides PORT; docker-compose commonly uses SERVER_PORT.
+  port: ${PORT:${SERVER_PORT:8080}}
+  error:
+    include-message: always
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  file:
+    name: lunacore.log
+  level:
+    com.luna.core: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN
+
+# Comunicacao Core -> TotemAPI
+totemapi:
+  base-url: ${TOTEM_API_BASE_URL:http://localhost:8081}
+  connect-timeout: ${TOTEM_API_CONNECT_TIMEOUT:2s}
+  read-timeout: ${TOTEM_API_READ_TIMEOUT:5s}

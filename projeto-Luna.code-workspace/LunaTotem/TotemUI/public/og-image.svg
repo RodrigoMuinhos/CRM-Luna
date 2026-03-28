@@ -1,0 +1,32 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8E6E1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Logo Circle -->
+  <circle cx="600" cy="250" r="80" fill="#D3A67F" opacity="0.2"/>
+  <circle cx="600" cy="250" r="60" fill="none" stroke="#D3A67F" stroke-width="3"/>
+  
+  <!-- Icon -->
+  <path d="M 600 220 L 600 280 M 570 250 L 630 250" stroke="#D3A67F" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Title -->
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#333" text-anchor="middle">
+    Totem Lunavita
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="440" font-family="Arial, sans-serif" font-size="32" fill="#666" text-anchor="middle">
+    Check-in e Pagamentos Rápidos
+  </text>
+  
+  <!-- Footer -->
+  <text x="600" y="550" font-family="Arial, sans-serif" font-size="24" fill="#999" text-anchor="middle">
+    Sistema de Autoatendimento
+  </text>
+</svg>
