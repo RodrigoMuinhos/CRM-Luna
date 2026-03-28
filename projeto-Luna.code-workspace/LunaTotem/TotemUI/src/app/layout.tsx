@@ -9,7 +9,7 @@ import { WEB_ONLY_MODE } from '@/lib/appMode';
 
 export const metadata: Metadata = {
     applicationName: 'Luna',
-    title: 'Totem Lunavita - Check-in e Pagamentos',
+    title: 'Luna',
     description: 'Sistema de autoatendimento para check-in e pagamentos rápidos na clínica Lunavita. Interface intuitiva e segura para pacientes.',
     keywords: ['totem', 'check-in', 'pagamentos', 'clínica', 'autoatendimento', 'lunavita'],
     authors: [{ name: 'Lunavita' }],
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
         locale: 'pt_BR',
         url: 'https://lunavita.vercel.app',
         siteName: 'Totem Lunavita',
-        title: 'Totem Lunavita - Check-in e Pagamentos',
+        title: 'Luna',
         description: 'Sistema de autoatendimento para check-in e pagamentos rápidos na clínica Lunavita.',
         images: [
             {
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Totem Lunavita - Check-in e Pagamentos',
+        title: 'Luna',
         description: 'Sistema de autoatendimento para check-in e pagamentos rápidos na clínica Lunavita.',
         images: ['/og-image.svg'],
     },
