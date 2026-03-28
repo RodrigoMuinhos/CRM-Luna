@@ -12,6 +12,20 @@ export const metadata: Metadata = {
     description: 'Sistema de autoatendimento para check-in e pagamentos rápidos na clínica Lunavita. Interface intuitiva e segura para pacientes.',
     keywords: ['totem', 'check-in', 'pagamentos', 'clínica', 'autoatendimento', 'lunavita'],
     authors: [{ name: 'Lunavita' }],
+    manifest: '/manifest.json',
+    icons: {
+        icon: [
+            { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
+        apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+        shortcut: ['/icon-192.png'],
+    },
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: 'Luna',
+    },
     openGraph: {
         type: 'website',
         locale: 'pt_BR',
@@ -44,6 +58,7 @@ export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
+    themeColor: '#0B0B0F',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
