@@ -8,6 +8,7 @@ import { GlobalF4SpecificReprintHotkey } from '@/components/GlobalF4SpecificRepr
 import { WEB_ONLY_MODE } from '@/lib/appMode';
 
 export const metadata: Metadata = {
+    applicationName: 'Luna',
     title: 'Totem Lunavita - Check-in e Pagamentos',
     description: 'Sistema de autoatendimento para check-in e pagamentos rápidos na clínica Lunavita. Interface intuitiva e segura para pacientes.',
     keywords: ['totem', 'check-in', 'pagamentos', 'clínica', 'autoatendimento', 'lunavita'],
@@ -25,6 +26,11 @@ export const metadata: Metadata = {
         capable: true,
         statusBarStyle: 'black-translucent',
         title: 'Luna',
+    },
+    other: {
+        'apple-mobile-web-app-title': 'Luna',
+        'mobile-web-app-capable': 'yes',
+        'apple-mobile-web-app-capable': 'yes',
     },
     openGraph: {
         type: 'website',
