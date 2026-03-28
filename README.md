@@ -51,5 +51,17 @@ NEXT_PUBLIC_VIDEO_TENANT_ID=tenant-1
 Veja também:
 
 - `docs/DEPLOY-MODEL.md`
+- `docs/RAILWAY-BACKEND.md`
 - `projeto-Luna.code-workspace/LunaTotem/TotemUI/WEB-ONLY-MODE.md`
 - `projeto-Luna.code-workspace/LunaTotem/TotemUI/VERCEL-WEB-CHECKLIST.md`
+
+## Railway
+
+Backend recomendado no Railway:
+
+- `projeto-Luna.code-workspace/LunaCore/lunacore`
+- `projeto-Luna.code-workspace/LunaTotem/TotemAPI`
+
+Guia:
+
+- `docs/RAILWAY-BACKEND.md`
