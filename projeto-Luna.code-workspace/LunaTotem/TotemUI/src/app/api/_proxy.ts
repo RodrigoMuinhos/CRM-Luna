@@ -23,6 +23,14 @@ export function getTotemApiBaseUrl(): string | null {
   );
 }
 
+export function getLunaCoreBaseUrl(): string | null {
+  return (
+    normalizeBaseUrl(process.env.LUNACORE_API_PROXY_URL) ||
+    normalizeBaseUrl(process.env.NEXT_PUBLIC_LUNACORE_URL) ||
+    normalizeBaseUrl(process.env.NEXT_PUBLIC_LUNACORE_API_URL)
+  );
+}
+
 export async function proxyTo(request: Request, targetUrl: string): Promise<Response> {
   const method = request.method.toUpperCase();
 
