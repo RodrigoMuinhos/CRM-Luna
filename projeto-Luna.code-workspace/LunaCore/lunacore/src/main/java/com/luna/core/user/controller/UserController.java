@@ -27,7 +27,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('OWNER','ADMIN','FINANCE')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN')")
     public List<UserResponse> list(Authentication authentication) {
         User currentUser = requireCurrentUser(authentication);
         Tenant tenant = currentUser.getTenant();
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('OWNER','ADMIN','FINANCE')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN')")
     public ResponseEntity<UserResponse> create(@RequestBody UserRequest request, Authentication authentication) {
         User currentUser = requireCurrentUser(authentication);
         Tenant tenant = currentUser.getTenant();
@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('OWNER','ADMIN','FINANCE')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN')")
     public ResponseEntity<UserResponse> update(@PathVariable String id,
             @RequestBody UserRequest request,
             Authentication authentication) {
@@ -133,7 +133,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('OWNER','ADMIN','FINANCE')")
+    @PreAuthorize("hasAnyRole('OWNER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String id, Authentication authentication) {
         User currentUser = requireCurrentUser(authentication);
         Tenant tenant = currentUser.getTenant();

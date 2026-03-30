@@ -62,8 +62,8 @@ function getRuntimePrintTerminalIdFromElectron(): string | null {
   return null;
 }
 
-// The UI expects a single "API base" that exposes all /api/* endpoints.
-// In this repo, TotemAPI (8081) is the facade that exposes appointments/patients/users/payments.
+// The UI expects a single "API base" that exposes most /api/* endpoints.
+// In this repo, TotemAPI (8081) is the facade for appointments/patients/payments.
 // LunaCore (8080) does NOT expose /api/payments, which breaks PIX QR generation in kiosk.
 // Prefer the TotemAPI URL when available.
 const preferredApiUrl =
@@ -160,9 +160,9 @@ export const API_ENDPOINTS = {
   patientById: (id: string) => `${API_BASE_URL}/api/patients/${id}`,
   patientByCpf: (cpf: string) => `${API_BASE_URL}/api/patients/cpf/${cpf}`,
 
-  // Users
-  users: `${API_BASE_URL}/api/users`,
-  userById: (id: string | number) => `${API_BASE_URL}/api/users/${id}`,
+  // Users live on LunaCore because auth + tenant-scoped persistence are centralized there.
+  users: `${LUNACORE_BASE_URL}/api/users`,
+  userById: (id: string | number) => `${LUNACORE_BASE_URL}/api/users/${id}`,
   
   // Payments
   payments: `${API_BASE_URL}/api/payments`,
