@@ -48,7 +48,7 @@ public class WebhookConfigService {
         config.setUpdatedBy(updatedBy);
 
         WebhookConfig saved = webhookConfigRepository.save(config);
-        log.info("Webhook config saved for tenant: {} by user: {}", dto.getTenantId(), updatedBy);
+        log.info("Webhook config saved for tenant: {}", dto.getTenantId());
         
         return toDto(saved);
     }
@@ -60,7 +60,7 @@ public class WebhookConfigService {
         Optional<WebhookConfig> configOpt = webhookConfigRepository.findByTenantIdAndEnabledTrue(tenantId);
         
         if (configOpt.isEmpty()) {
-            log.info("Webhook não configurado ou desabilitado para tenant: {}", tenantId);
+            log.debug("Webhook não configurado ou desabilitado para tenant: {}", tenantId);
             return true; // Não é erro, apenas não está configurado
         }
 
@@ -85,8 +85,7 @@ public class WebhookConfigService {
 
             HttpEntity<CheckInWebhookPayload> request = new HttpEntity<>(payload, headers);
 
-            log.info("Enviando webhook check-in para: {}", config.getWebhookUrl());
-            log.debug("Payload: {}", payload);
+            log.debug("Enviando webhook check-in para tenant {} com timeout {}s", tenantId, config.getTimeoutSeconds());
 
             ResponseEntity<String> response = restTemplate.postForEntity(
                     config.getWebhookUrl(),
@@ -97,7 +96,7 @@ public class WebhookConfigService {
             boolean success = response.getStatusCode().is2xxSuccessful();
             
             if (success) {
-                log.info("Webhook enviado com sucesso. Status: {}", response.getStatusCode());
+                log.debug("Webhook enviado com sucesso. Status: {}", response.getStatusCode());
             } else {
                 log.warn("Webhook retornou status não-sucesso: {}", response.getStatusCode());
             }

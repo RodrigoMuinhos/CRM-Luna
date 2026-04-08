@@ -147,13 +147,10 @@ public class PaymentController {
     public ResponseEntity<List<Appointment>> list(@AuthenticationPrincipal UserContext userContext) {
         // Mantido por compatibilidade com UI (não expõe dados de pagamento do LunaPay).
         // Retorna consultas do tenant (se existir tenantId no token), senão lista geral (dev).
-        List<Appointment> all = store.listAppointments();
         if (userContext == null || userContext.getTenantId() == null) {
-            return ResponseEntity.ok(all);
+            return ResponseEntity.ok(store.listAppointments());
         }
-        return ResponseEntity.ok(all.stream()
-                .filter(a -> userContext.getTenantId().equals(a.getTenantId()))
-                .toList());
+        return ResponseEntity.ok(store.listAppointments(userContext.getTenantId()));
     }
 
     public static class PaymentProcessRequest {

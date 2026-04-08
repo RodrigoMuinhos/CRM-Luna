@@ -32,7 +32,7 @@ public class WebhookController {
             @RequestHeader(value = "svix-signature", required = false) String svixSignature,
             @RequestBody Map<String, Object> payload) {
 
-        logger.info("[WEBHOOK] 📬 Resend webhook recebido");
+        logger.debug("[WEBHOOK] Resend webhook recebido");
 
         // Verificar assinatura se secret configurado
         if (webhookSecret != null && !webhookSecret.isEmpty()) {
@@ -77,7 +77,7 @@ public class WebhookController {
                 handleEmailClicked(data);
                 break;
             default:
-                logger.info("[WEBHOOK] 📧 Evento não tratado: {}", type);
+                logger.debug("[WEBHOOK] Evento não tratado: {}", type);
         }
 
         return ResponseEntity.ok(Map.of("received", true));
@@ -86,13 +86,13 @@ public class WebhookController {
     private void handleEmailSent(Map<String, Object> data) {
         String emailId = (String) data.get("email_id");
         String to = extractTo(data);
-        logger.info("[WEBHOOK] ✉️ Email ENVIADO - ID: {} | Para: {}", emailId, to);
+        logger.debug("[WEBHOOK] Email ENVIADO - ID: {} | Para: {}", emailId, to);
     }
 
     private void handleEmailDelivered(Map<String, Object> data) {
         String emailId = (String) data.get("email_id");
         String to = extractTo(data);
-        logger.info("[WEBHOOK] ✅ Email ENTREGUE - ID: {} | Para: {}", emailId, to);
+        logger.debug("[WEBHOOK] Email ENTREGUE - ID: {} | Para: {}", emailId, to);
     }
 
     private void handleEmailDelayed(Map<String, Object> data) {
@@ -122,13 +122,13 @@ public class WebhookController {
     private void handleEmailOpened(Map<String, Object> data) {
         String emailId = (String) data.get("email_id");
         String to = extractTo(data);
-        logger.info("[WEBHOOK] 👀 Email ABERTO - ID: {} | Para: {}", emailId, to);
+        logger.debug("[WEBHOOK] Email ABERTO - ID: {} | Para: {}", emailId, to);
     }
 
     private void handleEmailClicked(Map<String, Object> data) {
         String emailId = (String) data.get("email_id");
         String to = extractTo(data);
-        logger.info("[WEBHOOK] 🖱️ Link CLICADO no email - ID: {} | Para: {}", emailId, to);
+        logger.debug("[WEBHOOK] Link CLICADO no email - ID: {} | Para: {}", emailId, to);
     }
 
     @SuppressWarnings("unchecked")

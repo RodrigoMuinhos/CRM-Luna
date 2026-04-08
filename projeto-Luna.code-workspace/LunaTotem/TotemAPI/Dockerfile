@@ -35,18 +35,13 @@ USER spring:spring
 # Copy jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_TOOL_OPTIONS="-Xms96m -Xmx256m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom -Dfile.encoding=UTF-8"
+
 EXPOSE 8081
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD curl -f http://localhost:8081/actuator/health || exit 1
+  CMD curl -f http://localhost:8081/api/health || exit 1
 
-# Optimized for Docker environment with graceful shutdown
-ENTRYPOINT ["java", \
-  "-XX:+UseContainerSupport", \
-  "-XX:InitialRAMPercentage=10.0", \
-  "-XX:MaxRAMPercentage=50.0", \
-  "-XX:+UseG1GC", \
-  "-XX:MaxGCPauseMillis=100", \
-  "-Djava.security.egd=file:/dev/./urandom", \
-  "-Dserver.shutdown=graceful", \
-  "-jar", "app.jar"]
+# Optimized for small containers; JAVA_TOOL_OPTIONS remains overridable by the platform.
+ENTRYPOINT ["java", "-Dserver.shutdown=graceful", "-jar", "app.jar"]

@@ -1,6 +1,7 @@
 package br.lunavita.totemapi.repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,6 +91,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
     List<Appointment> searchUnpaidByPatientOrCpf(
             @Param("q") String q,
             @Param("cpfPart") String cpfPart);
+
+    @Query("SELECT a FROM Appointment a " +
+            "WHERE a.date <= :dateLimit " +
+            "AND UPPER(a.status) IN :statuses")
+    List<Appointment> findPendingForStatusAutoCancel(
+            @Param("dateLimit") LocalDate dateLimit,
+            @Param("statuses") Collection<String> statuses);
 
     // ===== MÉTODOS DEPRECADOS (NÃO USAR - SEM FILTRO DE TENANT) =====
 

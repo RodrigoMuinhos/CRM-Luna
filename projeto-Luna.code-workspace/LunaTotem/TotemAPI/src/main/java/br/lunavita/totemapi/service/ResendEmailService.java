@@ -52,32 +52,22 @@ public class ResendEmailService {
         // funcionou
         if ((resendApiKey == null || resendApiKey.isBlank()) && System.getenv("RESEND_API_KEY") != null) {
             resendApiKey = System.getenv("RESEND_API_KEY");
-            logger.info("[RESEND] API Key carregada via System.getenv()");
+            logger.debug("[RESEND] API Key carregada via System.getenv()");
         }
         if ((fromEmail == null || fromEmail.isBlank() || fromEmail.equals("onboarding@resend.dev"))
                 && System.getenv("RESEND_FROM_EMAIL") != null) {
             fromEmail = System.getenv("RESEND_FROM_EMAIL");
         }
 
-        // Log para debug
-        logger.info("[RESEND] DEBUG - resendApiKey from @Value: '{}'",
-                resendApiKey != null ? resendApiKey.substring(0, Math.min(10, resendApiKey.length())) + "..." : "null");
-        logger.info("[RESEND] DEBUG - RESEND_API_KEY env var: '{}'",
-                System.getenv("RESEND_API_KEY") != null ? "SET" : "NOT SET");
-
         if (isConfigured()) {
-            logger.info("[RESEND] ✅ API Key configurada, serviço de email Resend ativo");
-            logger.info("[RESEND] From email: {}", fromEmail);
+            logger.info("[RESEND] Serviço de email Resend ativo");
         } else {
             logger.warn("[RESEND] ⚠️ API Key NÃO configurada - emails não serão enviados via Resend");
         }
     }
 
     public boolean isConfigured() {
-        boolean configured = resendApiKey != null && !resendApiKey.isBlank();
-        logger.debug("[RESEND] isConfigured check: apiKey present={}, configured={}",
-                resendApiKey != null && resendApiKey.length() > 0, configured);
-        return configured;
+        return resendApiKey != null && !resendApiKey.isBlank();
     }
 
     @Async

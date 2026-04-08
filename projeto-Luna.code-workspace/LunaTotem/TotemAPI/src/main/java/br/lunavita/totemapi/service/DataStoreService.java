@@ -109,7 +109,7 @@ public class DataStoreService {
      */
     public List<Appointment> searchUnpaidAppointments(String query) {
         if (query == null || query.trim().length() < 2) {
-            System.out.println("[UNPAID SEARCH] Query muito curta: " + query);
+            logger.debug("[UNPAID SEARCH] Query muito curta");
             return List.of();
         }
         String q = query.trim();
@@ -117,10 +117,8 @@ public class DataStoreService {
         if (cpfPart.length() < 2) {
             cpfPart = "";
         }
-        System.out.println("[UNPAID SEARCH] Buscando com q=" + q + ", cpfPart=" + cpfPart);
         List<Appointment> results = appointmentRepository.searchUnpaidByPatientOrCpf(q, cpfPart);
-        System.out.println("[UNPAID SEARCH] Encontrados: " + results.size() + " agendamentos não pagos");
-        results.forEach(a -> System.out.println("  - " + a.getPatient() + " | CPF: " + a.getCpf() + " | Paid: " + a.isPaid() + " | Amount: " + a.getAmount()));
+        logger.debug("[UNPAID SEARCH] Encontrados {} agendamentos não pagos", results.size());
         return results;
     }
 
@@ -129,11 +127,11 @@ public class DataStoreService {
      */
     public List<Appointment> searchUnpaidAppointments(String tenantId, String query) {
         if (query == null || query.trim().length() < 2) {
-            System.out.println("[UNPAID SEARCH MT] Query muito curta: " + query);
+            logger.debug("[UNPAID SEARCH MT] Query muito curta");
             return List.of();
         }
         if (tenantId == null || tenantId.isBlank()) {
-            System.out.println("[UNPAID SEARCH MT] Tenant vazio, usando busca global");
+            logger.debug("[UNPAID SEARCH MT] Tenant vazio, usando busca global");
             return searchUnpaidAppointments(query);
         }
         String q = query.trim();
@@ -141,10 +139,8 @@ public class DataStoreService {
         if (cpfPart.length() < 2) {
             cpfPart = "";
         }
-        System.out.println("[UNPAID SEARCH MT] Buscando com tenantId=" + tenantId + ", q=" + q + ", cpfPart=" + cpfPart);
         List<Appointment> results = appointmentRepository.searchUnpaidByTenantIdAndPatientOrCpf(tenantId, q, cpfPart);
-        System.out.println("[UNPAID SEARCH MT] Encontrados: " + results.size() + " agendamentos não pagos");
-        results.forEach(a -> System.out.println("  - " + a.getPatient() + " | CPF: " + a.getCpf() + " | Paid: " + a.isPaid() + " | TenantId: " + a.getTenantId()));
+        logger.debug("[UNPAID SEARCH MT] Encontrados {} agendamentos não pagos", results.size());
         return results;
     }
 

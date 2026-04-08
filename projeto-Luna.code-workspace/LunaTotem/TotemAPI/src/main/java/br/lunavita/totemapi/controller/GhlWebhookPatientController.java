@@ -39,7 +39,7 @@ public class GhlWebhookPatientController {
             @RequestHeader(value = "x-webhook-token", required = false) String token,
             @RequestBody GhlPatientWebhookDto payload) {
 
-        logger.info("[GHL] Webhook recebido - contactId: {}, eventType: {}", 
+        logger.debug("[GHL] Webhook recebido - contactId: {}, eventType: {}", 
                 payload.getContactId(), payload.getEventType());
 
         if (webhookToken == null || webhookToken.isBlank() || token == null || !webhookToken.equals(token)) {

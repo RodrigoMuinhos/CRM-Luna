@@ -2,6 +2,8 @@ package br.lunavita.totemapi.service;
 
 import br.lunavita.totemapi.model.User;
 import br.lunavita.totemapi.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -51,22 +54,14 @@ public class AuthService {
     }
 
     public User login(String email, String password) {
-        System.out.println("[AUTH SERVICE] Login attempt for email: " + email);
-        System.out.println("[AUTH SERVICE] Password provided: " + password);
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email ou senha inválidos"));
 
-        System.out.println("[AUTH SERVICE] User found in database: " + user.getEmail());
-        System.out.println("[AUTH SERVICE] Stored password hash: " + user.getPassword());
-        System.out.println("[AUTH SERVICE] Password matches: " + passwordEncoder.matches(password, user.getPassword()));
-
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println("[AUTH SERVICE] Password validation FAILED");
+            logger.debug("Login failed for {}", email);
             throw new RuntimeException("Email ou senha inválidos");
         }
 
-        System.out.println("[AUTH SERVICE] Password validation SUCCESS");
         // Rotate refresh token on login
         user.setRefreshToken(generateRefreshToken());
         user.setRefreshTokenExpiry(LocalDateTime.now().plusDays(7));
@@ -106,9 +101,7 @@ public class AuthService {
     }
 
     public User validateAndRefresh(String refreshToken) {
-        User user = userRepository.findAll().stream()
-                .filter(u -> refreshToken.equals(u.getRefreshToken()))
-                .findFirst()
+        User user = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Refresh token inválido"));
         if (user.getRefreshTokenExpiry() == null || user.getRefreshTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Refresh token expirado");

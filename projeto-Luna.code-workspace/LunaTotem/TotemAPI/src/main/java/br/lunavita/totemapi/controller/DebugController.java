@@ -3,10 +3,12 @@ package br.lunavita.totemapi.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@Profile("!prod")
 @RequestMapping("/api/debug")
 @CrossOrigin(origins = "*")
 public class DebugController {

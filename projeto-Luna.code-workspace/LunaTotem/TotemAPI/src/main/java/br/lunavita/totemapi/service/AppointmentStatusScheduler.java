@@ -37,7 +37,9 @@ public class AppointmentStatusScheduler {
     @Scheduled(fixedDelayString = "${totem.appointments.status-check-ms:60000}")
     @Transactional
     public void autoCancelOverdueAppointments() {
-        List<Appointment> appointments = appointmentRepository.findAll();
+        List<Appointment> appointments = appointmentRepository.findPendingForStatusAutoCancel(
+                LocalDate.now(),
+                WAITING_STATUSES);
         LocalDateTime now = LocalDateTime.now();
         int updated = 0;
 

@@ -45,7 +45,7 @@ public class DataAccessAuditService {
             log.setAccessedAt(LocalDateTime.now());
 
             dataAccessLogRepository.save(log);
-            logger.info("[LGPD-AUDIT] {} by {} on {} (ID: {})", actionType, userEmail, resourceType, resourceId);
+            logger.debug("[LGPD-AUDIT] {} by {} on {} (ID: {})", actionType, userEmail, resourceType, resourceId);
         } catch (Exception e) {
             logger.error("[LGPD-AUDIT] Failed to log access: {}", e.getMessage(), e);
         }

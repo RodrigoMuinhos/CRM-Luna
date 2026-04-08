@@ -39,7 +39,7 @@ public class GhlWebhookAppointmentController {
             @RequestHeader(value = "x-webhook-token", required = false) String token,
             @RequestBody GhlAppointmentWebhookDto payload) {
 
-        logger.info("[GHL-APPOINTMENT] Webhook recebido - CPF: {}, Data: {}, Hora: {}", 
+        logger.debug("[GHL-APPOINTMENT] Webhook recebido - CPF: {}, Data: {}, Hora: {}", 
                 maskCpf(payload.getCpf()), payload.getAppointmentDate(), payload.getAppointmentTime());
 
         // Validar token

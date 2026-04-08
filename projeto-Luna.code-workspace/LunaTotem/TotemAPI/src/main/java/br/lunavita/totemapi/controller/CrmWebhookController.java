@@ -57,16 +57,13 @@ public class CrmWebhookController {
                         "message", "CPF inválido"));
             }
 
-            logger.info("[CRM WEBHOOK] 📥 Recebido webhook do CRM");
-            logger.info("[CRM WEBHOOK] Contact ID: {}", contact.getContactId());
-            logger.info("[CRM WEBHOOK] Nome: {}",
-                    contact.getNomeCompleto() != null ? contact.getNomeCompleto() : contact.getFullName());
-            logger.info("[CRM WEBHOOK] CPF: {}", maskCpf(cleanCpf));
+            logger.debug("[CRM WEBHOOK] Recebido webhook do CRM - contactId={}, cpf={}",
+                    contact.getContactId(), maskCpf(cleanCpf));
 
             // Processar o webhook
             String patientId = crmIntegrationService.processWebhook(payload);
 
-            logger.info("[CRM WEBHOOK] ✅ Paciente {} processado com sucesso - ID: {}", maskCpf(cleanCpf), patientId);
+            logger.info("[CRM WEBHOOK] Paciente {} processado com sucesso - ID: {}", maskCpf(cleanCpf), patientId);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,

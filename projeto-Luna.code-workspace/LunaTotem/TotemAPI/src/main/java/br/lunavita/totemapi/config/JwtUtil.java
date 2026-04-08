@@ -49,6 +49,10 @@ public class JwtUtil {
      */
     public boolean isValid(String token) {
         Claims claims = getClaims(token);
+        return isValid(claims);
+    }
+
+    public boolean isValid(Claims claims) {
         if (claims == null)
             return false;
         Date exp = claims.getExpiration();
@@ -86,6 +90,11 @@ public class JwtUtil {
     @SuppressWarnings("unchecked")
     public List<String> getModules(String token) {
         Claims claims = getClaims(token);
+        return getModules(claims);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getModules(Claims claims) {
         if (claims == null)
             return List.of();
         Object modulesObj = claims.get("modules");
