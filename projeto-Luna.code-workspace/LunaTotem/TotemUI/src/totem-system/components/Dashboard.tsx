@@ -2,9 +2,10 @@ import { Users, Calendar, Clock, DollarSign, TrendingUp, TrendingDown } from 'lu
 import ResponsiveTable from '@/components/ui/responsive-table';
 import { useEffect, useState, useRef, useCallback, RefObject } from 'react';
 import { API_ENDPOINTS, authRole, normalizeRole } from '@/lib/apiConfig';
-import { getStatusBadgeClasses, getStatusLabel } from '@/lib/status';
+import { getStatusBadgeClasses } from '@/lib/status';
 import { appointmentAPI } from '@/lib/api';
 import { toast } from 'sonner';
+import { StatusSelect } from './appointments/StatusSelect';
 
 type Role = 'ADMINISTRACAO' | 'MEDICO' | 'RECEPCAO';
 
@@ -27,8 +28,6 @@ interface DashboardSummary {
     amount?: number;
   }>;
 }
-
-const statusOptions = ['aguardando', 'confirmado', 'em-atendimento', 'cancelado'];
 
 type DashboardProps = {
   refreshCallbackRef?: RefObject<(() => void) | null>;
@@ -279,11 +278,7 @@ export function Dashboard({ refreshCallbackRef }: DashboardProps) {
     }
   };
 
-  const handleStatusChange = async (appointmentId: string, currentStatus: string) => {
-    const currentIndex = statusOptions.indexOf(currentStatus);
-    const nextIndex = (currentIndex + 1) % statusOptions.length;
-    const nextStatus = statusOptions[nextIndex];
-    
+  const handleStatusChange = async (appointmentId: string, nextStatus: string) => {
     setUpdatingAppointmentId(appointmentId);
     try {
       await appointmentAPI.updateStatus(appointmentId, nextStatus);
@@ -387,14 +382,11 @@ export function Dashboard({ refreshCallbackRef }: DashboardProps) {
                 { key: 'time', header: 'Horário', cell: (a) => <span className="text-gray-600">{a.time}</span> },
                 { key: 'paid', header: 'Pagamento', cell: (a) => renderPaidBadge((a as any).paid, a.id) },
                 { key: 'status', header: 'Status', cell: (a) => (
-                  <button
-                    onClick={() => handleStatusChange(a.id, a.status)}
+                  <StatusSelect
+                    status={a.status}
+                    onChange={(value) => handleStatusChange(a.id, value)}
                     disabled={updatingAppointmentId === a.id}
-                    className={`px-3 py-1 rounded-full text-sm cursor-pointer hover:scale-105 hover:shadow-md transition-all disabled:opacity-50 ${getStatusColor(a.status)}`}
-                    title="Clique para alternar status"
-                  >
-                    {updatingAppointmentId === a.id ? '...' : getStatusLabel(a.status)}
-                  </button>
+                  />
                 ) },
               ]}
               cardRenderer={(appointment) => (
@@ -408,14 +400,12 @@ export function Dashboard({ refreshCallbackRef }: DashboardProps) {
                     <div>{formatDate(appointment.date)}</div>
                     <div>{appointment.time}</div>
                     <div className="mt-1">
-                      <button
-                        onClick={() => handleStatusChange(appointment.id, appointment.status)}
+                      <StatusSelect
+                        status={appointment.status}
+                        onChange={(value) => handleStatusChange(appointment.id, value)}
                         disabled={updatingAppointmentId === appointment.id}
-                        className={`px-2 py-0.5 rounded-full text-xs cursor-pointer hover:scale-105 hover:shadow-md transition-all disabled:opacity-50 ${getStatusColor(appointment.status)}`}
-                        title="Clique para alternar status"
-                      >
-                        {updatingAppointmentId === appointment.id ? '...' : getStatusLabel(appointment.status)}
-                      </button>
+                        compact
+                      />
                     </div>
                   </div>
                 </div>

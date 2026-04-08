@@ -6,6 +6,7 @@ import { appointmentAPI, Appointment } from '@/lib/api'
 import { Button } from '@/components/Button'
 import { PageContainer } from '@/components/PageContainer'
 import { formatTime24h } from '@/lib/time'
+import { getStatusBadgeClasses, getStatusLabel } from '@/lib/status'
 
 interface SearchInputProps {
   onSelectAppointment: (appointment: Appointment) => void
@@ -201,14 +202,8 @@ export function SearchInput({ onSelectAppointment, onBack }: SearchInputProps) {
                           </div>
                         </div>
                         <div className="ml-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            appointment.status === 'confirmado' || appointment.status === 'CONFIRMADA'
-                              ? 'bg-green-100 text-green-800'
-                              : appointment.status === 'aguardando' || appointment.status === 'AGUARDANDO_CHEGADA'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {appointment.status}
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadgeClasses(appointment.status)}`}>
+                            {getStatusLabel(appointment.status)}
                           </span>
                         </div>
                       </div>

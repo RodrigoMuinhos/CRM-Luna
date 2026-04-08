@@ -85,27 +85,34 @@ export function Appointments({ canControlTimers = true, refreshCallbackRef }: Ap
               <option value="confirmado">Confirmado</option>
               <option value="aguardando">Aguardando</option>
               <option value="em-atendimento">Em Atendimento</option>
+              <option value="concluido">Concluído</option>
               <option value="cancelado">Cancelado</option>
             </select>
           </div>
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             <label className="flex flex-col text-sm text-gray-600">
-              CPF
+              Paciente ou CPF
               <input
                 value={filterPatient}
                 onChange={(e) => setFilterPatient(e.target.value)}
                 className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#D3A67F] focus:outline-none"
-                placeholder="Digite o CPF do paciente"
+                placeholder="Digite o nome ou CPF da paciente"
               />
             </label>
             <label className="flex flex-col text-sm text-gray-600">
-              Médico/Especialidade
-              <input
+              Médico
+              <select
                 value={filterDoctor}
                 onChange={(e) => setFilterDoctor(e.target.value)}
-                className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#D3A67F] focus:outline-none"
-                placeholder="Digite o nome ou especialidade do médico"
-              />
+                className="mt-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#D3A67F] focus:outline-none"
+              >
+                <option value="">Todos os médicos</option>
+                {doctorList.map((doctor) => (
+                  <option key={doctor.id} value={doctor.name.toLowerCase()}>
+                    {doctor.name}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="flex flex-col text-sm text-gray-600">
               Data inicial
@@ -204,7 +211,6 @@ export function Appointments({ canControlTimers = true, refreshCallbackRef }: Ap
             handleUpdateAppointmentStatus(appointmentId, newStatus);
           }}
           formatCurrency={formatCurrency}
-          getStatusColor={getStatusColor}
         />
       )}
 

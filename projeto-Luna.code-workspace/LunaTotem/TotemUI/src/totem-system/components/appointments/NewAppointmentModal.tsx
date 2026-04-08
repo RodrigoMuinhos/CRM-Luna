@@ -119,7 +119,7 @@ export function NewAppointmentModal({
           </div>
 
           <label className="flex flex-col text-sm text-gray-600">
-            Email do paciente
+            Email do paciente <span className="text-xs text-gray-400">(opcional)</span>
             <input
               type="email"
               value={newAppointment.patientEmail}

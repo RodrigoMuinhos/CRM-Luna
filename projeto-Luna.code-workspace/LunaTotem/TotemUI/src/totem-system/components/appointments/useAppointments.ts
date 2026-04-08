@@ -6,6 +6,7 @@ import { onPaymentConfirmed } from '../../bridge/paymentBridge';
 import { getLatestPhotoBlob } from '../../bridge/photoBridge';
 import { API_ENDPOINTS } from '@/lib/apiConfig';
 import { getAppointmentCreditInstallments, setAppointmentCreditInstallments } from '@/lib/creditInstallmentsConfig';
+import { getStatusBadgeClasses } from '@/lib/status';
 
 const formatDate = (value?: string) => {
   if (!value) return '-';
@@ -30,12 +31,7 @@ const toDateOnlyISO = (value?: string) => {
 };
 
 const getStatusColor = (status: string) => {
-  const s = (status || '').toString().toLowerCase().replace(/\s+/g, '-');
-  if (s === 'confirmado' || s === 'confirmed' || s === 'confirmada') return 'bg-[#CDDCDC] text-gray-700';
-  if (s === 'em-atendimento' || s === 'em_atendimento' || s === 'in_service' || s === 'in-service') return 'bg-[#D3A67F] text-white';
-  if (s === 'aguardando' || s === 'agendado' || s === 'scheduled' || s === 'agendado(a)') return 'bg-[#ECEDDE] text-gray-600';
-  if (s === 'cancelado' || s === 'canceled' || s === 'cancelada') return 'bg-[#CDB0AD] text-gray-700';
-  return 'bg-gray-100 text-gray-600';
+  return getStatusBadgeClasses(status);
 };
 
 const formatCurrency = (value?: number) => {
@@ -85,7 +81,11 @@ const buildEmptyAppointment = (today: string) => ({
 type TimerState = Record<string, { running: boolean; startAt: number | null; elapsedMs: number }>;
 
 export function useAppointmentsState() {
-  const today = new Date().toISOString().slice(0, 10);
+  const nowDate = new Date();
+  const today = nowDate.toISOString().slice(0, 10);
+  const endOfMonth = new Date(nowDate.getFullYear(), nowDate.getMonth() + 1, 0)
+    .toISOString()
+    .slice(0, 10);
 
   const [filterStatus, setFilterStatus] = useState('todos');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -103,7 +103,7 @@ export function useAppointmentsState() {
   const [filterPatient, setFilterPatient] = useState('');
   const [filterDoctor, setFilterDoctor] = useState('');
   const [filterDateFrom, setFilterDateFrom] = useState(today);
-  const [filterDateTo, setFilterDateTo] = useState(today);
+  const [filterDateTo, setFilterDateTo] = useState(endOfMonth);
   const [timers, setTimers] = useState<TimerState>({});
   const [now, setNow] = useState(Date.now());
   
@@ -122,16 +122,17 @@ export function useAppointmentsState() {
     .filter((apt) => {
       const p = filterPatient.trim().toLowerCase();
       if (!p) return true;
-      const cpf = (apt.cpf || '').toLowerCase();
+      const cpf = (apt.cpf || '').replace(/\D/g, '');
       const name = (apt.patient || '').toLowerCase();
-      return name.includes(p) || cpf.includes(p.replace(/\D/g, ''));
+      const patientQuery = p.replace(/\s+/g, ' ').trim();
+      const cpfQuery = p.replace(/\D/g, '');
+      return name.includes(patientQuery) || (cpfQuery.length > 0 && cpf.includes(cpfQuery));
     })
     .filter((apt) => {
       const d = filterDoctor.trim().toLowerCase();
       if (!d) return true;
-      const name = (apt.doctor || '').toLowerCase();
-      const spec = (apt.specialty || '').toLowerCase();
-      return name.includes(d) || spec.includes(d);
+      const name = (apt.doctor || '').trim().toLowerCase();
+      return name === d;
     })
     .filter((apt) => {
       const dateOnly = toDateOnlyISO(apt.date);
@@ -233,20 +234,20 @@ export function useAppointmentsState() {
   const closeDetails = () => setDetailAppointment(null);
 
   const handleEditAppointment = (appointment: Appointment) => {
-    setNewAppointment({
-      time: appointment.time,
-      date: appointment.date,
-      patient: appointment.patient,
-      patientEmail: appointment.patientEmail ?? '',
-      patientId: appointment.patientId ?? '',
-      doctor: appointment.doctor,
-      specialty: appointment.specialty,
-      type: appointment.type,
-      value: appointment.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      cpf: maskCPF(appointment.cpf),
-      doctorId: '',
-      creditInstallments: String(getAppointmentCreditInstallments(appointment.id) ?? 1),
-    });
+      setNewAppointment({
+        time: appointment.time,
+        date: appointment.date,
+        patient: appointment.patient,
+        patientEmail: appointment.patientEmail ?? '',
+        patientId: appointment.patientId ?? '',
+        doctor: appointment.doctor,
+        specialty: appointment.specialty,
+        type: appointment.type,
+        value: appointment.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        cpf: maskCPF(appointment.cpf),
+        doctorId: doctorList.find((doctor) => doctor.name === appointment.doctor)?.id ?? '',
+        creditInstallments: String(getAppointmentCreditInstallments(appointment.id) ?? 1),
+      });
     setEditingAppointmentId(appointment.id ?? null);
     setIsModalOpen(true);
     closeDetails();

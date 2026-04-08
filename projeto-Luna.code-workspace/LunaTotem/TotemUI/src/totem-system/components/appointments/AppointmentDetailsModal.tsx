@@ -1,6 +1,7 @@
 import { Trash2, X, Edit2 } from 'lucide-react';
 import { Appointment } from '@/lib/api';
 import { maskCPF } from '@/lib/cpf';
+import { StatusSelect } from './StatusSelect';
 
 type Props = {
   appointment: Appointment;
@@ -9,17 +10,9 @@ type Props = {
   onEdit?: (appointmentId: string) => void;
   onStatusChange?: (appointmentId: string, newStatus: string) => void;
   formatCurrency: (value?: number) => string;
-  getStatusColor: (status: string) => string;
 };
 
-export function AppointmentDetailsModal({ appointment, onClose, onDelete, onEdit, onStatusChange, formatCurrency, getStatusColor }: Props) {
-  const statusOptions = [
-    'aguardando',
-    'confirmado',
-    'em-atendimento',
-    'cancelado',
-  ];
-
+export function AppointmentDetailsModal({ appointment, onClose, onDelete, onEdit, onStatusChange, formatCurrency }: Props) {
   const handleDelete = () => {
     if (appointment.id) {
       onDelete(appointment.id);
@@ -32,15 +25,6 @@ export function AppointmentDetailsModal({ appointment, onClose, onDelete, onEdit
     }
   };
 
-  const handleStatusClick = () => {
-    if (appointment.id && onStatusChange) {
-      const currentIndex = statusOptions.indexOf(appointment.status);
-      const nextIndex = (currentIndex + 1) % statusOptions.length;
-      const nextStatus = statusOptions[nextIndex];
-      onStatusChange(appointment.id, nextStatus);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-3 sm:px-4">
       <div className="w-full max-w-[640px] sm:max-w-2xl rounded-[24px] sm:rounded-[28px] bg-white p-4 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -50,14 +34,11 @@ export function AppointmentDetailsModal({ appointment, onClose, onDelete, onEdit
             <h2 className="text-2xl sm:text-3xl text-[#D3A67F]">{appointment.patient}</h2>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleStatusClick}
-              className={`px-3 py-1 rounded-full text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] cursor-pointer hover:scale-105 hover:shadow-md transition-all ${getStatusColor(appointment.status)}`}
-              title="Clique para alternar status"
-            >
-              {appointment.status}
-            </button>
+            <StatusSelect
+              status={appointment.status}
+              onChange={(value) => appointment.id && onStatusChange?.(appointment.id, value)}
+              compact
+            />
             {onEdit && (
               <button
                 type="button"

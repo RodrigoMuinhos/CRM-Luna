@@ -3,14 +3,14 @@ export type CanonicalStatus =
   | 'AGUARDANDO_PAGAMENTO'
   | 'CONFIRMADA'
   | 'EM_ATENDIMENTO'
-  | 'FINALIZADA'
+  | 'CONCLUIDO'
   | 'CANCELADA';
 
 export const STATUS_SEQUENCE: CanonicalStatus[] = [
   'AGUARDANDO_CHEGADA',
   'CONFIRMADA',
   'EM_ATENDIMENTO',
-  'FINALIZADA',
+  'CONCLUIDO',
   'CANCELADA',
 ];
 
@@ -19,7 +19,7 @@ const STATUS_LABELS: Record<CanonicalStatus, string> = {
   AGUARDANDO_PAGAMENTO: 'Aguardando pagamento',
   CONFIRMADA: 'Confirmada',
   EM_ATENDIMENTO: 'Em atendimento',
-  FINALIZADA: 'Finalizada',
+  CONCLUIDO: 'Concluído',
   CANCELADA: 'Cancelada',
 };
 
@@ -28,16 +28,42 @@ const STATUS_COLORS: Record<CanonicalStatus, string> = {
   AGUARDANDO_PAGAMENTO: 'bg-[#F4E0CB] text-[#8B5E34]',
   CONFIRMADA: 'bg-[#CDDCDC] text-gray-700',
   EM_ATENDIMENTO: 'bg-[#D3A67F] text-white',
-  FINALIZADA: 'bg-[#E3E8EF] text-gray-700',
+  CONCLUIDO: 'bg-[#DDEBD9] text-[#43624B]',
   CANCELADA: 'bg-[#CDB0AD] text-gray-700',
 };
+
+const STATUS_DOT_COLORS: Record<CanonicalStatus, string> = {
+  AGUARDANDO_CHEGADA: 'bg-[#C9CDA8]',
+  AGUARDANDO_PAGAMENTO: 'bg-[#D8A46B]',
+  CONFIRMADA: 'bg-[#9BB7B7]',
+  EM_ATENDIMENTO: 'bg-[#D3A67F]',
+  CONCLUIDO: 'bg-[#7DA184]',
+  CANCELADA: 'bg-[#B98580]',
+};
+
+export const APPOINTMENT_STATUS_OPTIONS = [
+  { value: 'aguardando', label: 'Aguardando', canonical: 'AGUARDANDO_CHEGADA' },
+  { value: 'confirmado', label: 'Confirmado', canonical: 'CONFIRMADA' },
+  { value: 'em-atendimento', label: 'Em atendimento', canonical: 'EM_ATENDIMENTO' },
+  { value: 'concluido', label: 'Concluído', canonical: 'CONCLUIDO' },
+  { value: 'cancelado', label: 'Cancelado', canonical: 'CANCELADA' },
+] as const;
+
+function normalizeToken(raw: string) {
+  return raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+}
 
 export function normalizeStatus(raw?: string): CanonicalStatus {
   if (!raw) {
     return 'AGUARDANDO_CHEGADA';
   }
 
-  const normalized = raw.trim().toUpperCase().replace(/[\s-]+/g, '_');
+  const normalized = normalizeToken(raw);
 
   switch (normalized) {
     case 'AGUARDANDO':
@@ -57,10 +83,14 @@ export function normalizeStatus(raw?: string): CanonicalStatus {
     case 'IN_SERVICE':
     case 'IN-SERVICE':
       return 'EM_ATENDIMENTO';
+    case 'CONCLUIDO':
+    case 'CONCLUIDA':
     case 'FINALIZADO':
     case 'FINALIZADA':
+    case 'FINALIZED':
     case 'FINISHED':
-      return 'FINALIZADA';
+    case 'COMPLETED':
+      return 'CONCLUIDO';
     case 'CANCELADO':
     case 'CANCELADA':
     case 'CANCELED':
@@ -74,8 +104,30 @@ export function getStatusBadgeClasses(raw?: string) {
   return STATUS_COLORS[normalizeStatus(raw)];
 }
 
+export function getStatusDotClasses(raw?: string) {
+  return STATUS_DOT_COLORS[normalizeStatus(raw)];
+}
+
 export function getStatusLabel(raw?: string) {
   return STATUS_LABELS[normalizeStatus(raw)];
+}
+
+export function getStatusValue(raw?: string) {
+  switch (normalizeStatus(raw)) {
+    case 'AGUARDANDO_PAGAMENTO':
+    case 'AGUARDANDO_CHEGADA':
+      return 'aguardando';
+    case 'CONFIRMADA':
+      return 'confirmado';
+    case 'EM_ATENDIMENTO':
+      return 'em-atendimento';
+    case 'CONCLUIDO':
+      return 'concluido';
+    case 'CANCELADA':
+      return 'cancelado';
+    default:
+      return 'aguardando';
+  }
 }
 
 export function getNextStatus(raw?: string): CanonicalStatus {

@@ -3,6 +3,7 @@
 import { Clock, User, UserCog, Plus, Edit2 } from 'lucide-react';
 import { maskCPF } from '@/lib/cpf';
 import { CalendarAppointment } from './useCalendarState';
+import { StatusSelect } from '../appointments/StatusSelect';
 
 type SelectedDayPanelProps = {
   selectedDate: string | null;
@@ -25,31 +26,6 @@ export function SelectedDayPanel({
   onTogglePayment,
   onEditAppointment,
 }: SelectedDayPanelProps) {
-  const statusOptions = [
-    { value: 'aguardando', label: 'Aguardando', color: 'bg-[#ECEDDE] text-gray-700' },
-    { value: 'confirmado', label: 'Confirmado', color: 'bg-[#CDDCDC] text-gray-700' },
-    { value: 'em-atendimento', label: 'Em atendimento', color: 'bg-[#D3A67F] text-white' },
-    { value: 'cancelado', label: 'Cancelado', color: 'bg-[#CDB0AD] text-gray-700' },
-  ];
-
-  const getStatusColor = (status: string) => {
-    const option = statusOptions.find((opt) => opt.value === status);
-    return option?.color || 'bg-gray-100 text-gray-700';
-  };
-
-  const cycleStatus = (currentStatus: string) => {
-    const currentIndex = statusOptions.findIndex((opt) => opt.value === currentStatus);
-    const nextIndex = (currentIndex + 1) % statusOptions.length;
-    return statusOptions[nextIndex].value;
-  };
-
-  const handleStatusClick = (appointmentId: string, currentStatus: string) => {
-    if (onUpdateStatus) {
-      const nextStatus = cycleStatus(currentStatus);
-      onUpdateStatus(appointmentId, nextStatus);
-    }
-  };
-
   return (
     <div className="bg-white rounded-lg border border-gray-100">
       <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 flex items-center justify-between">
@@ -84,15 +60,12 @@ export function SelectedDayPanel({
                   <span className="text-sm font-medium">{apt.time}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleStatusClick(apt.id, apt.status)}
-                    className={`text-xs px-3 py-1.5 rounded-full transition-all cursor-pointer hover:scale-105 hover:shadow-md ${getStatusColor(
-                      apt.status
-                    )}`}
-                    title="Clique para alternar status"
-                  >
-                    {apt.status}
-                  </button>
+                  <StatusSelect
+                    status={apt.status}
+                    onChange={(value) => onUpdateStatus?.(apt.id, value)}
+                    disabled={!onUpdateStatus}
+                    compact
+                  />
                   {onEditAppointment && (
                     <button
                       onClick={() => onEditAppointment(apt.id)}
